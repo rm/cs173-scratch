@@ -13,8 +13,7 @@
 (define-type Type
   [numT]
   [boolT]
-  [funT (arg : Type) (ret : Type)]
-  [ifT (cond : Type) (then : Type) (else : Type)])
+  [funT (arg : Type) (ret : Type)])
 
 (define-type TyBinding
   [bind (id : symbol) (ty : Type)])
@@ -22,13 +21,13 @@
 (define mt-ty-env (list))
 (define extend-ty-env cons)
 
-(define (lookup [name : symbol] [tenv : TyEnv]) : Type
+(define (lookup [s : symbol] [tenv : TyEnv]) : Type
   (cond 
     [(empty? tenv) (error 'lookup "name not found")]
     [(cons? tenv) (let [(f (first tenv))]
                     (cond 
-                      [(equal? (bind-id f) name) (bind-ty f)]
-                      [else (lookup name (rest tenv))]))]))
+                      [(equal? (bind-id f) s) (bind-ty f)]
+                      [else (lookup s (rest tenv))]))]))
 
 (define (tc [expr : TyExprC] [tenv : TyEnv]) : Type
   (type-case TyExprC expr
